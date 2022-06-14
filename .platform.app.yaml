@@ -48,18 +48,25 @@ web:
       rules:
         ^/composer\.json:
           allow: false
-        ^/license\.txt$:
+        ^/wp/license\.txt$:
           allow: false
-        ^/readme\.html$:
+        ^/wp/readme\.html$:
           allow: false
-    "/wp-content/cache":
-      root: "wordpress/wp-content/cache"
-      scripts: false
+        '^/robots\.txt$':
+          allow: true
+        '^/sitemap\.xml$':
+          allow: true
+    # Prevents scripts from running inside of the wp-content directory (and subdirectories) but allows media to still be
+    # available
+    "/wp-content":
+      root: "web/wp-content"
       allow: false
-    "/wp-content/uploads":
-      root: "wordpress/wp-content/uploads"
       scripts: false
-      allow: true
+      rules:
+        # Allow access to common static files.
+        '(?<!\-lock)\.(?i:jpe?g|gif|png|svg|bmp|ico|css|js(?:on)?|eot|ttf|woff|woff2|pdf|docx?|xlsx?|pp[st]x?|psd|odt|key|mp[2-5g]|m4[av]|og[gv]|wav|mov|wm[av]|avi|3g[p2])$':
+          allow: true
+          expires: 1w
 
 # The size of the persistent disk of the application (in MB).
 disk: 2048
