@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="author" content="MarkdownViewer++" />
+        <title>git.md</title>
+        <style type="text/css">
+            
+/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
+td, h1, h2, h3, h4, h5, p, ul, ol, li {
+    page-break-inside: avoid; 
+}
+
+        </style>
+      </head>
+    <body>
+        <p><img src="../../images/interface/git_on_vh.jpg" alt="git-on-vh" /></p>
+<h1 id="using-git-to-manage-your-site-on-vh">Using Git to manage your site on VH</h1>
+<h3 id="published-on-sep-25-2012">Published on Sep 25, 2012</h3>
+<p>This won't be a post on how to use Git; for that, see this <a href="http://git-scm.com/videos">collection of videos</a>, and this <a href="http://gitreal.codeschool.com/">interactive tutorial</a>. Instead, I'll list out the steps you need to complete in order to have your remote GIT repository on VH, outside the webroot, and have it publish out to your webroot when you commit new changes.</p>
+<p>Here in <a href="http://universityaffairs.missouri.edu/department/web-communications/">Web Communications</a>, we've been playing with <a href="http://git-scm.com/">Git</a> as a means to manage versions of our sites.  So far, that has been limited to using Git on the local machine, making a remote repository on a shared file space (doit-bfs1), pushing to it occasionally, and then manually transferring the files back over to VH. What we've REALLY been wanting to do though is use it to fully manage our sites, allow anyone to work on the site while keeping track of the versions AND publish out to VH, all automatically. We also didnt want to have to store the Git repository in the webroot.</p>
+<p>Finally, after some research, and <a href="http://danielmiessler.com/study/git/#website">an article</a> from <a href="http://uablogs.missouri.edu/interface/author/hughesjd/">Josh Hughes</a>, we have figured out how to manage our sites on VH using Git.</p>
+<p>First, you need a GIT repository initialized on your local machine, with at least one file added, staged and committed (see above tutorials/articles).  Now ssh into VH using your resource account.  You will need to decide which directory you want to store your Git repository in and where you want the repository to publish to.  We prefer to keep our repository in a directory above the webroot in a directory labeled &quot;repo&quot; (or &quot;repos&quot; if it is a hydra site and we are storing multiple repositories). You should ensure that permissions on the repo directory are set to 0700 (e.g. chmod 0700 repo). This is at least in part so that you don't accidentally try to pull from two different repos on VH and merge them both into your local copy of the repo (trust me: it happens).</p>
+<p>If you want to have the respository publish to a sub-directory of your webroot, make sure that directory exists FIRST. Move into the directory where you want to store the Git repository and enter:</p>
+<blockquote>git init &ndash;&ndash;bare</blockquote>
+<p><img src="../../images/interface/1.-git-bare.png" alt="git-bare" /></p>
+<p>You should receive a message that states Git has created an empty repository. When we initiated the bare repository above, config.bare was automatically set to true, meaning that there is no worktree (place to store the actual source files).  However, we <em>do</em> want there to be actual source files, so we have to manually set bare to <strong>false</strong>.  Therefore, this next step is important and must be done BEFORE setting the worktree.  Enter in:</p>
+<blockquote>git config core.bare false</blockquote>
+<p>![git-config-bare] ../../images/interface/2.-git-config.bare_.png)</p>
+<p>There will not be a response message after entering this.  Now tell Git where the worktree is stored (make sure this directory already exists as Git will not create it for you).  Enter in:</p>
+<blockquote>git config core.worktree /sites/&lt;yoursite&gt;/www/&lt;sub-directory&gt;</blockquote>
+<p><img src="../../images/interface/3.-git-worktree.png" alt="git-working-tree" /></p>
+<p>Where &lt;yoursite&gt; is the name of your department's site and &lt;sub-directory&gt; is the name of the directory where you want Git to publish to.  Next enter in:</p>
+<blockquote>git config receive.denycurrentbranch ignore</blockquote>
+<p><img src="../../images/interface/4.-git-deny.png" alt="git-deny" /></p>
+<p>Note: The <a href="http://danielmiessler.com/study/git/#website">original article</a> mentioned using GIT_WORK_DIR instead of setting configuration settings in Git.  However, I could not get GIT_WORK_DIR to work correctly on VH.</p>
+<p>If you now list the contents of the directory you are in, you will notice that Git has created several directories.</p>
+<p><img src="../../images/interface/5.-git-new-directories.png" alt="git-new-directories" /></p>
+<p>We'll need to create a new file in the hooks directory, so move into that directory.  We need to create a new file called &quot;post-receive&quot;.  Using your favorite editor, create the file and in it, enter:</p>
+<blockquote>#!/bin/sh
+git checkout -f</blockquote>
+<p><img src="../../images/interface/6.-git-post-receive.png" alt="git-post-receive" /></p>
+<p>Save the file, and then make sure to change its permissions so that it is executable (chmod +x post-receive).  Back on your local machine, we now need to tell Git that there is a remote copy of this repository on VH that we want to synch with.  Different Git GUI clients will accomplish this in different ways, so I'll just list the terminal commands.  Bring up your terminal application, change to the directory where you created your local Git repository and enter:</p>
+<blockquote>git remote add &lt;alias&gt; ssh://&lt;resource-account&gt;@vh.missouri.edu/sites/&lt;account-name&gt;/path/to/repo</blockquote>
+<p><img src="../../images/interface/7.-git-remote-add.png" alt="git-remote-add" /></p>
+<p>Where &lt;alias&gt; is how you want to refer to this remote repository (we named ours &quot;vh&quot;), &lt;resource-account&gt; is your resource account name, and &lt;account-name&gt; is the your site's account name on vh (<em>usually</em> matches the resource account name). Now enter:</p>
+<blockquote>git push &lt;alias&gt; +master:refs/heads/master</blockquote>
+<p><img src="../../images/interface/8.-git-remote-push-initial.png" alt="git-remote-push-initial" /></p>
+<p>When you hit enter, you will be prompted to log into VH using the resource account's password.  After that, Git should report that it copied over objects and synched your branches.  From here on out, after you make a change and commit, all you have to do is enter in</p>
+<blockquote>git push &lt;alias&gt;</blockquote>
+<p><img src="../../images/interface/9.-git-remote-push.png" alt="git-remote-push" /></p>
+<p>Or in your GUI, issue a push to your remote and select the alias you created.</p>
+<p>From now on, whenever you push your changes to the remote repository on VH, the post-receive script we set up above will fire and automatically update the source files on VH in the worktree folder.</p>
+<p> </p>
+
+    </body>
+</html>
+            

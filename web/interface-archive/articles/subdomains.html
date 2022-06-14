@@ -1,0 +1,174 @@
+<!DOCTYPE html []>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="MarkdownViewer++" />
+    <title>subdomains.md</title>
+    <style type="text/css">
+            
+/* Avoid page breaks inside the most common attributes, especially for exports (i.e. PDF) */
+td, h1, h2, h3, h4, h5, p, ul, ol, li {
+    page-break-inside: avoid; 
+}
+
+        </style>
+  </head>
+  <body>
+    <h1 id="setting-up-multiple-independent-subdomains-in-a-wordpress-network">Setting up Multiple Independent Subdomains in a WordPress Network</h1>
+    <h3 id="published-on-feb-21-2017">Published on Feb 21, 2017</h3>
+    <p>TL;DR - You're going to need to map your domains to the <strong>COOKIE_DOMAIN</strong> constant.</p>
+    <p>We run numerous WordPress networks on campus, almost all of which are set up with multiple independent subdomains (e.g. foo.missouri.edu, bar.missouri.edu, etc.).  Historically, a WordPress network only supported subdomains based off a root domain (e.g. root domain of mysite.com, child sites of foo.mysite.com, bar.mysite.com, etc.). One way to be able to map independent domains in a network was with the <a href="https://wordpress.org/plugins/wordpress-mu-domain-mapping/">WordPress MU Domain Mapping plugin</a>.  We've been doing this awhile so this was our standard set up when running a network.</p>
+    <p>Recently, <a href="https://twitter.com/aacduke">Aaron Duke</a> asked me why I was still using the MU Domain Mapping plugin when WordPress had <a href="https://codex.wordpress.org/WordPress_Multisite_Domain_Mapping">integrated domain mapping natively</a> into WordPress as of version 4.5. Short answer: I must have missed that in the changelog for 4.5.  Reading through the documentation, I still wasn't convinced it would work in our situation (as described above).  I set up a test WordPress subdomain network for an account where I had two domains pointed to the same account on the server.   Following the directions from the docs¹, I set up both sites and added a second user. Added a couple of posts to the main site (foo.missouri.edu) and verified pretty links were working correctly. Good so far.  Went to log into the second site (bar.missouri.edu) and was presented with the "Cookies are blocked" error message.</p>
+    <p>
+      <img src="../../images/interface/cookies-error.png" alt="cookies-error" />
+    </p>
+    <p> </p>
+    <p>In looking at the headers, sure enough, WordPress was attempting to set the domain property of the <em>WP Cookie Check </em>cookie to foo.missouri.edu instead of bar.missouri.edu.  I reached out to some WordPress colleagues to try and see if it was something I had missed. The ever lovely <a href="https://twitter.com/bamadesigner">Rachel Carden</a> mentioned seeing similar issues if the <strong>DOMAIN_CURRENT_SITE</strong> constant was set incorrectly.  <a href="https://twitter.com/mackensen">Charles Fulton</a> suggested manually setting the <strong>COOKIE_DOMAIN</strong> constant to<em> .missouri.edu</em>.  While this would technically solve the issue, I didn't want to wildcard the cookie like that as it would allow it to be read by a rogue site on the missouri.edu domain (and trust me, there are rogue sites out there).  Surely there had to be a better way.</p>
+    <p>Taking Rachel's and Charles' suggestions, I started digging into the WordPress core.  Since the problem is with the cookie domain, I started with debugging when and where WordPress sets cookies.  In <a href="https://github.com/WordPress/WordPress/blob/master/wp-login.php">wp-login.php</a>,  we find that it sets the <em>WP Cookie Check</em> cookie at line 407, using the constant <strong>COOKIE_DOMAIN</strong> for the domain property.</p>
+    <p>[php firstline="407"]setcookie( TEST_COOKIE, 'WP Cookie check', 0, COOKIEPATH, COOKIE_DOMAIN, $secure );[/php]</p>
+    <p>For subdomain multisites, this constant is defined starting at line 78 in the function ms_cookie_constants() in the file <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-default-constants.php">ms-default-constants.php</a>.</p>
+    <p>[php firstline="49" highlight="78"]
+function ms_cookie_constants(  ) {
+$current_network = get_network();</p>
+    <p>/**
+* @since 1.2.0
+*/
+if ( !defined( 'COOKIEPATH' ) )
+define( 'COOKIEPATH', $current_network-&gt;path );</p>
+    <p>/**
+* @since 1.5.0
+*/
+if ( !defined( 'SITECOOKIEPATH' ) )
+define( 'SITECOOKIEPATH', $current_network-&gt;path );</p>
+    <p>/**
+* @since 2.6.0
+*/
+if ( !defined( 'ADMIN_COOKIE_PATH' ) ) {
+if ( ! is_subdomain_install() || trim( parse_url( get_option( 'siteurl' ), PHP_URL_PATH ), '/' ) ) {
+define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH );
+} else {
+define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH . 'wp-admin' );
+}
+}</p>
+    <p>/**
+* @since 2.0.0
+*/
+if ( !defined('COOKIE_DOMAIN') &amp;&amp; is_subdomain_install() ) {
+if ( !empty( $current_network-&gt;cookie_domain ) )
+define('COOKIE_DOMAIN', '.' . $current_network-&gt;cookie_domain);
+else
+define('COOKIE_DOMAIN', '.' . $current_network-&gt;domain);
+}
+}
+[/php]</p>
+    <p>From there we see that it using the object $current_network for the value used to define the constant.  $current_network is returned from the call to function get_network at line 50.  get_network() is defined on line 1098 of <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-blogs.php">ms-blogs.php</a> and attempts to return an instance of WP_Network based on either a network ID passed into the function or by using the global $current_site.</p>
+    <p>[php firstline="1098"]
+function get_network( $network = null ) {
+global $current_site;
+if ( empty( $network ) &amp;&amp; isset( $current_site ) ) {
+$network = $current_site;
+}</p>
+    <p>if ( $network instanceof WP_Network ) {
+$_network = $network;
+} elseif ( is_object( $network ) ) {
+$_network = new WP_Network( $network );
+} else {
+$_network = WP_Network::get_instance( $network );
+}</p>
+    <p>if ( ! $_network ) {
+return null;
+}</p>
+    <p>/**
+* Fires after a network is retrieved.
+*
+* @since 4.6.0
+*
+* @param WP_Network $_network Network data.
+*/
+$_network = apply_filters( 'get_network', $_network );</p>
+    <p>return $_network;
+}
+[/php]</p>
+    <p>We know our call to the functions from inside of ms_cookie_constants didn't include any parameters, so the global $current_site must already contain data. Adding a watch revealed that was in fact already populated by the time get_network was called. Alright, we'll need to track down when $current_site is initially created: <a href="https://github.com/WordPress/WordPress/blob/master/wp-admin/includes/schema.php">schema.php</a>, <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-settings.php">ms-settings.php</a>, and <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-load.php">ms-load.php</a>.  <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-settings.php">ms-settings.php</a> and <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-load.php">ms-load.php</a> are loaded during a login, and <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-settings.php">ms-settings.php</a> calls the function ms_load_current_site_and_network() in <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-load.php">ms-load.php</a> which is where, <strong>FINALLY</strong>, we find the first instantiation of $current_site. Wait, why was I trying to track down $current_site?  :D</p>
+    <p>[php firstline="283"]
+function ms_load_current_site_and_network( $domain, $path, $subdomain = false ) {
+global $wpdb, $current_site, $current_blog;</p>
+    <pre>
+      <code>// If the network is defined in wp-config.php, we can simply use that.
+if ( defined( 'DOMAIN_CURRENT_SITE' ) &amp;amp;amp;amp;&amp;amp;amp;amp; defined( 'PATH_CURRENT_SITE' ) ) {
+	$current_site = new stdClass;
+	$current_site-&gt;id = defined( 'SITE_ID_CURRENT_SITE' ) ? SITE_ID_CURRENT_SITE : 1;
+	$current_site-&gt;domain = DOMAIN_CURRENT_SITE;
+	$current_site-&gt;path = PATH_CURRENT_SITE;
+	if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
+		$current_site-&gt;blog_id = BLOG_ID_CURRENT_SITE;
+	} elseif ( defined( 'BLOGID_CURRENT_SITE' ) ) { // deprecated.
+		$current_site-&gt;blog_id = BLOGID_CURRENT_SITE;
+	}
+
+	if ( 0 === strcasecmp( $current_site-&gt;domain, $domain ) &amp;&amp; 0 === strcasecmp( $current_site-&gt;path, $path ) ) {
+		$current_blog = get_site_by_path( $domain, $path );
+	} elseif ( '/' !== $current_site-&gt;path &amp;&amp; 0 === strcasecmp( $current_site-&gt;domain, $domain ) &amp;&amp; 0 === stripos( $path, $current_site-&gt;path ) ) {
+		// If the current network has a path and also matches the domain and path of the request,
+		// we need to look for a site using the first path segment following the network's path.
+		$current_blog = get_site_by_path( $domain, $path, 1 + count( explode( '/', trim( $current_site-&gt;path, '/' ) ) ) );
+	} else {
+		// Otherwise, use the first path segment (as usual).
+		$current_blog = get_site_by_path( $domain, $path, 1 );
+	}
+</code>
+    </pre>
+    <p>[/php]</p>
+    <p>$current_site is simply a stdClass object where the property domain is set to the constant <strong>DOMAIN_CURRENT_SITE</strong>.  So now we know that back in the function get_network() in <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-blogs.php">ms-blogs.php</a> uses the value of $current_site for $network and uses it to instantiate a new instance of WP_Network at line 1107.  Now that we know where the information for WP_Network comes from, let's look to see how it determines the property cookie_domain.  During the __construct method there is a call to the private method _set_cookie_domain(), and look there at line 244.</p>
+    <p>[php firstline="230" highlight="244"]
+/**</p>
+    <ul>
+      <li>
+        <p>Set the cookie domain based on the network domain if one has</p>
+      </li>
+      <li>
+        <p>not been populated.</p>
+      </li>
+      <li></li>
+      <li>
+        <p>@todo What if the domain of the network doesn't match the current site?</p>
+      </li>
+      <li></li>
+      <li>
+        <p>@since 4.4.0</p>
+      </li>
+      <li>
+        <p>@access private
+*/
+private function _set_cookie_domain() {
+if ( ! empty( $this-&gt;cookie_domain ) ) {
+return;
+}</p>
+        <p>$this-&gt;cookie_domain = $this-&gt;domain;
+if ( 'www.' === substr( $this-&gt;cookie_domain, 0, 4 ) ) {
+$this-&gt;cookie_domain = substr( $this-&gt;cookie_domain, 4 );
+}
+}
+[/php]</p>
+      </li>
+    </ul>
+    <p>We finally see that cookie_domain is simply set to the same domain as was defined in the constant <strong>DOMAIN_CURRENT_SITE</strong>. And it appears that this scenario is a known issue; look at the todo there at line 234.</p>
+    <blockquote>@todo What if the domain of the network doesn't match the current site?</blockquote>
+So now, circling all the way back to where we started, we can see that in the function ms_cookie_constants() in the file <a href="https://github.com/WordPress/WordPress/blob/master/wp-includes/ms-default-constants.php">ms-default-constants.php</a>, if COOKIE_DOMAIN isn't already defined (e.g. in wp-config.php or a plugin), then it will be set to the <strong>cookie_domain</strong> or the <strong>domain</strong> properties, <em>which are the exact same thing</em>.  Which means that in order to set the domain property in the cookie to the correct domain in our WordPress network setup, we're going to need to set it ourselves.
+<p>The challenge is we need to set the COOKIE_DOMAIN before wp-settings.php calls the function ms_cookie_constants().  In looking through the <a href="http://i.imgur.com/SqQQE.png">WordPress Core Load chart</a>, I can see the only file we have direct access to before <a href="https://github.com/WordPress/WordPress/blob/master/wp-settings.php">wp-settings.php</a> loads is wp-config.php.  I could add our logic into wp-config.php, but I'd rather not place logic in a config file.  In looking through <a href="https://github.com/WordPress/WordPress/blob/master/wp-settings.php">wp-settings.php</a>, both network-activated plugins and must-user plugins are loaded and the action hook <a href="https://codex.wordpress.org/Plugin_API/Action_Reference/muplugins_loaded"><em>muplugins_loaded</em></a> is fired before ms_cookie_constants is called.  There's our answer: add the code to a plugin, hook it to the <a href="https://codex.wordpress.org/Plugin_API/Action_Reference/muplugins_loaded">muplugins_loaded</a> action and network-activate it!</p><p>The code is simple enough</p><p>[php]
+/**
+Plugin Name: COOKIE_DOMAIN mapper
+Plugin URI: <a href="http://gilzow.com/">http://gilzow.com/</a>
+Description: Maps the current domain into COOKIE_DOMAIN in a multisite set up
+Author: @gilzow
+Version: 0.1
+Author URI: <a href="http://gilzow.com/">http://gilzow.com/</a>
+*/</p><p>add_action('muplugins_loaded',function(){
+if(defined('MULTISITE') &amp;&amp; MULTISITE &amp;&amp; !defined('COOKIE_DOMAIN') &amp;&amp; DOMAIN_CURRENT_SITE !== $<em>SERVER['SERVER_NAME']){
+if(1 === preg_match('/^(?:www.)?((?:[A-Za-z0-9</em>-]+.){1,3}[A-Za-z0-9_-]{2,})<span class="math">/',</span>_SERVER['SERVER_NAME'],$aryMatches)){
+define('COOKIE_DOMAIN',$aryMatches[1]);
+}
+}
+});
+[/php]</p><p>If <strong>MULTISITE</strong> is set to true, <strong>COOKIE_DOMAIN</strong> isn't already defined and the SERVER_NAME environmental variable is not equal to the value in <strong>DOMAIN_CURRENT_SITE</strong>, send it to the regular expression (regex) statement.  In the regex, we start with checking to see if there is a www at the beginning, but we don't care about it (the ?: indicates to the regex engine to not capture this group).  Then we check to see if there is 1 to 3 groups of 1 to infinity number of A through Z (lower and uppper case), digits, underscores and dashes followed by a period.  Those groups need to be followed a group of characters of at least 2 characters or more of the same A-Z (upper/lower), digits, underscores and dashes.  That whole thing is captured. If there's a match, place the values matched and captured into the variable $aryMatches. If we have a match, take the capture group (key 1 in the array) and use that value for our <strong>COOKIE_DOMAIN</strong> constant.</p><p>Why the regex instead of just using SERVER_NAME or HTTP_HOST?  Host is from the header sent to us by the client so it can't be trusted.  And while one would <em>think</em> SERVER_NAME would be safe since it is (supposed to be) an environmental variable, it's actually <a href="http://shiflett.org/blog/2006/mar/server-name-versus-http-host">determined in part from the HTTP_HOST value</a>.  Now, it's <em>unlikely</em> someone would be able to inject a value into the Host that would result in an exploit here, but better safe than sorry.  Instead, we're going to simply make sure that the host name only includes alphanumeric characters, dashes and underscores.  The only thing that one might need to change is the 3 in {1,3}. At three, the domain foo.bar.gilzow.com (fourth-level) would be valid and match, but biz.foo.bar.gilzow.com (fifth-level) would not.  If you need to use fifth-level or more subdomains, you'll need to adjust that value accordingly.</p><p>Having added the plugin, and network activating it, I can now successfully log into the subsite, and in viewing the headers, see that it is setting the <em>domain</em> property on the cookie to the correct domain.  Success!</p><p>Having walked through the code, I'm now wondering how anyone using independent domains has been able to get a WordPress subdomain network working correctly without accounting for the cookie domain property?  And given the @todo in the WP_Network class, it appears that this is a known limitation.  Or maybe our environment is unique and we're the only ones running into this issue?</p><p>Hit me up in the comments below or <a href="https://twitter.com/gilzow">on twitter</a> if you'd like to discuss it.</p><p>Note ¹: Our sites are located on a central shared-hosting, load-balanced environment.  Each site is a CNAME of the domain for the hosting environment which is set as the A Record.  So we were unable to follow Step #3 of <a href="https://codex.wordpress.org/WordPress_Multisite_Domain_Mapping#Without_a_Dedicated_IP_or_Plugin">Multisite Domain Mapping Without a Dedicated IP or Plugin</a> since you're not supposed to assign a CNAME to another CNAME. In addition, we do not map the subsite domain as a fourth-level subdomain of the main site's domain.</p></body>
+</html>
