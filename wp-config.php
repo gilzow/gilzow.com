@@ -2,11 +2,19 @@
 
 use Platformsh\ConfigReader\Config;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 // Create a new config object to ease reading the Platform.sh environment variables.
 // You can alternatively use getenv() yourself.
 $config = new Config();
+
+// Default PHP settings.
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+ini_set('session.gc_maxlifetime', 200000);
+ini_set('session.cookie_lifetime', 2000000);
+ini_set('pcre.backtrack_limit', 200000);
+ini_set('pcre.recursion_limit', 200000);
 
 // Set default scheme and hostname.
 $site_scheme = 'http';
@@ -101,10 +109,10 @@ else {
 define( 'WP_HOME', $site_scheme . '://' . $site_host );
 // Do not put a slash "/" at the end.
 // https://codex.wordpress.org/Editing_wp-config.php#WP_SITEURL
-define( 'WP_SITEURL', WP_HOME );
-define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/wp-content' );
-define( 'WP_CONTENT_URL', WP_HOME . '/wp-content' );
+define('WP_SITEURL', WP_HOME . '/wp');
 
+define( 'WP_CONTENT_URL', WP_HOME . '/wp-content' );
+define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/web/wp-content' );
 // Disable WordPress from running automatic updates
 define( 'WP_AUTO_UPDATE_CORE', false );
 
