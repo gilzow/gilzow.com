@@ -1,0 +1,19 @@
+# Ignore local configuration files.
+/.env
+/wp-config-local.php
+
+# Ignore Composer packages.
+/vendor/
+
+# Temporary and build directories.
+/_www
+
+# Standard Wordpress files and folders:
+/web/wp/*
+/web/wp-content/*
+
+
+# Ignore mounts
+web/wp-content/cache
+web/wp-content/uploads
+

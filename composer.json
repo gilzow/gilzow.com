@@ -1,0 +1,50 @@
+{
+  "name": "gilzow/gilzow.com",
+  "description": "Gilzow.com site project",
+  "type": "project",
+  "require": {
+    "php": "^7.4",
+    "platformsh/config-reader": "^2.4",
+    "johnpbloch/wordpress-core-installer": "<3.0.0",
+    "johnpbloch/wordpress-core": "^5.1.1",
+    "wpackagist-theme/twentytwentytwo": "^1.2",
+    "wpackagist-plugin/classic-editor": "^1.4",
+    "wpackagist-plugin/cache-control": "^2.2.3",
+    "wpackagist-plugin/wp-cfm":"^1.7.4"
+  },
+  "config": {
+    "allow-plugins": {
+      "johnpbloch/wordpress-core-installer": true,
+      "composer/installers": true
+    }
+  },
+  "authors": [
+    {
+      "name": "Paul Gilzow",
+      "email": "paul@gilzow.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org/"
+    }
+  ],
+  "extra" : {
+    "wordpress-install-dir": "web/wp",
+    "installer-paths": {
+      "web/wp-content/mu-plugins/{$name}": [
+        "wpackagist-plugin/cache-control",
+        "wpackagist-plugin/wp-cfm"
+      ],
+
+      "web/wp-content/plugins/{$name}": [
+        "type:wordpress-plugin"
+      ],
+
+      "web/wp-content/themes/{$name}": [
+        "type:wordpress-theme"
+      ]
+    }
+  }
+}
