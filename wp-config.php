@@ -124,13 +124,13 @@ $table_prefix  = 'wp_';
  * Multisite support
  */
 if(
-    filter_var(getenv('MULTISITE'),FILTER_VALIDATE_BOOL)
-    && filter_var(getenv('MULTISITEINSTALLED'),FILTER_VALIDATE_BOOL)
+    filter_var(getenv('MULTISITE'),FILTER_VALIDATE_BOOLEAN)
+    && filter_var(getenv('MULTISITEINSTALLED'),FILTER_VALIDATE_BOOLEAN)
 ) {
     define('WP_ALLOW_MULTISITE', true); //enables the Network setup panel in Tools
     define('MULTISITE', true); //instructs WordPress to run in multisite mode
     #getenv will return false if it isn't set.
-    define('SUBDOMAIN_INSTALL', filter_var(getenv('SUBDOMAIN_INSTALL'),FILTER_VALIDATE_BOOL)); // does the instance contain subdirectory sites (false) or subdomain/multiple domain sites (true)
+    define('SUBDOMAIN_INSTALL', filter_var(getenv('SUBDOMAIN_INSTALL'),FILTER_VALIDATE_BOOLEAN)); // does the instance contain subdirectory sites (false) or subdomain/multiple domain sites (true)
     define('DOMAIN_CURRENT_SITE', $site_host); //the current domain being requested
     define('PATH_CURRENT_SITE', '/'); //path to the WordPress site if it isn't the root of the site (e.g. https://foo.com/blog/)
     define('SITE_ID_CURRENT_SITE', 1); //main/primary site ID
