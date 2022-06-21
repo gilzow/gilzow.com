@@ -3,7 +3,7 @@
 # Each route describes how an incoming URL is going
 # to be processed by Platform.sh.
 
-"https://{default}/":
+"https://{all}/":
     type: upstream
     upstream: "app:http"
     cache:
@@ -21,8 +21,4 @@
 # *ALL* www.* requests should be redirected back to primary domain
 "https://www.{all}/":
     type: redirect
-    to: "https://{default}/"
-# All vanity domain requests should be redirected to primary domain
-"https://{all}/":
-  type: redirect
-  to: "https://{default}/"
+    to: "https://{all}/"
