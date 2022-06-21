@@ -2,6 +2,20 @@
 #
 # Each route describes how an incoming URL is going
 # to be processed by Platform.sh.
+"https://{default }/":
+  type: upstream
+  upstream: "app:http"
+  cache:
+    enabled: true
+
+    # Base the cache on the session cookie and custom Drupal cookies. Ignore all other cookies.
+    cookies: ['/^SS?ESS/', '/^wordpress_/', '/^wp-settings/']
+  redirects:
+    expires: 1d
+    paths:
+      '^/wp-admin$':
+        to: "/wp-admin/"
+        regexp: true
 
 "https://{all}/":
     type: upstream
