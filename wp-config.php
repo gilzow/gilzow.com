@@ -54,18 +54,30 @@ if ($config->isValidPlatform()) {
         if ($config->routes()) {
 
             $routes = $config->routes();
+            $appName = $config->applicationName;
+            //we only want the route that is for the upstream and is marked as primary / default_domain
+            $aryRoutesFiltered = array_filter($config->routes(), function ($route) use ($appName) {
+                return ($route['primary'] && $appName === $route['upstream']);
+            });
 
-            foreach ($routes as $url => $route) {
-                if ($route['type'] === 'upstream' && $route['upstream'] === $config->applicationName) {
+            //there should now be only one
+            if (1 !== count($aryRoutesFiltered)) {
+                //@todo how do we handle this?
+            }
 
-                    // Pick the first hostname, or the first HTTPS hostname if one exists.
-                    $host = parse_url($url, PHP_URL_HOST);
-                    $scheme = parse_url($url, PHP_URL_SCHEME);
-                    if ($host !== false && (!isset($site_host) || ($site_scheme === 'http' && $scheme === 'https'))) {
-                        $site_host = $host;
-                        $site_scheme = $scheme ?: 'http';
-                    }
+            //the key is the URL of the primary domain
+            $defaultURL = array_key_first($aryRoutesFiltered);
+            $host = parse_url($defaultURL, PHP_URL_HOST);
+            $scheme = parse_url($defaultURL, PHP_URL_SCHEME);
+
+            if (!filter_var(getenv('MULTISITE'),FILTER_VALIDATE_BOOLEAN)) {
+                if ($host !== false && (!isset($site_host) || ($site_scheme === 'http' && $scheme === 'https'))) {
+                    $site_host = $host;
+                    $site_scheme = $scheme ?: 'http';
                 }
+            } else {
+                $site_host = $host;
+                $site_scheme = $scheme;
             }
         }
 
