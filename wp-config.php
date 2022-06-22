@@ -152,10 +152,10 @@ if(
 
     /**
      * we have a sub/multidomain multisite, and the site currently being requested is not the default domain, so we'll
-     * need to get the domain being requested, make sure it's valid and then set COOKIE_DOMAIN to that domain
+     * need to set COOKIE_DOMAIN to the domain being requested
      */
-    if (SUBDOMAIN_INSTALL && $site_host !== $_SERVER['SERVER_NAME']) {
-        //first get all the upstream URLs from routes
+    if (SUBDOMAIN_INSTALL && $site_host !== $domainCurrentSite) {
+        define('COOKIE_DOMAIN',$site_host);
     }
 }
 
