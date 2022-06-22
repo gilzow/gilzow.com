@@ -55,29 +55,31 @@ if ($config->isValidPlatform()) {
 
             $routes = $config->routes();
             $appName = $config->applicationName;
-            //we only want the route that is for the upstream and is marked as primary / default_domain
-            $aryRoutesFiltered = array_filter($config->routes(), function ($route) use ($appName) {
-                return ($route['primary'] && $appName === $route['upstream']);
+            //get all the valid routes that map to this app
+            $aryUpstreamRoutes = array_filter($config->routes(), function ($route) use ($appName) {
+                return isset($route['upstream']) && $appName === $route['upstream'];
             });
 
-            //there should now be only one
-            if (1 !== count($aryRoutesFiltered)) {
-                //@todo how do we handle this?
+            //now get a list of all the domains generated from the routes
+            $aryValidDomains = array_map(function ($url) {
+                return parse_url($url,PHP_URL_HOST);
+            }, array_keys($aryUpstreamRoutes));
+
+
+            //we're on platform.sh, so we _should_ have a site_host, and it _Should_ be one in routes
+            if (!in_array($site_host, $aryValidDomains, true)) {
+                //since site_host isn't one of our valid domains, let's set it to the first one from the list of valid options
+                $site_host = reset($aryValidDomains);
+                $site_scheme = 'https'; //@todo can/should we assume we're always https?
             }
 
-            //the key is the URL of the primary domain
-            $defaultURL = array_key_first($aryRoutesFiltered);
-            $host = parse_url($defaultURL, PHP_URL_HOST);
-            $scheme = parse_url($defaultURL, PHP_URL_SCHEME);
-
-            if (!filter_var(getenv('MULTISITE'),FILTER_VALIDATE_BOOLEAN)) {
-                if ($host !== false && (!isset($site_host) || ($site_scheme === 'http' && $scheme === 'https'))) {
-                    $site_host = $host;
-                    $site_scheme = $scheme ?: 'http';
-                }
-            } else {
-                $site_host = $host;
-                $site_scheme = $scheme;
+            //we're on a multisite, so we need to make sure we set DOMAIN_CURRENT_SITE to the *default* domain
+            if (filter_var(getenv('MULTISITE'),FILTER_VALIDATE_BOOLEAN)) {
+                //if we're in a multisite, then we only want the primary
+                $primaryRoute = array_key_first(array_filter($aryUpstreamRoutes, function ($route) {
+                    return $route['primary'];
+                }));
+                $domainCurrentSite = parse_url($primaryRoute,PHP_URL_HOST);
             }
         }
 
@@ -143,10 +145,18 @@ if(
     define('MULTISITE', true); //instructs WordPress to run in multisite mode
     #getenv will return false if it isn't set.
     define('SUBDOMAIN_INSTALL', filter_var(getenv('SUBDOMAIN_INSTALL'),FILTER_VALIDATE_BOOLEAN)); // does the instance contain subdirectory sites (false) or subdomain/multiple domain sites (true)
-    define('DOMAIN_CURRENT_SITE', $site_host); //the current domain being requested
+    define('DOMAIN_CURRENT_SITE', $domainCurrentSite); //the current domain being requested
     define('PATH_CURRENT_SITE', '/'); //path to the WordPress site if it isn't the root of the site (e.g. https://foo.com/blog/)
     define('SITE_ID_CURRENT_SITE', 1); //main/primary site ID
     define('BLOG_ID_CURRENT_SITE', 1); //main/primary/parent blog ID
+
+    /**
+     * we have a sub/multidomain multisite, and the site currently being requested is not the default domain, so we'll
+     * need to get the domain being requested, make sure it's valid and then set COOKIE_DOMAIN to that domain
+     */
+    if (SUBDOMAIN_INSTALL && $site_host !== $_SERVER['SERVER_NAME']) {
+        //first get all the upstream URLs from routes
+    }
 }
 
 // Default PHP settings.
