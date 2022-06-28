@@ -159,6 +159,8 @@ if(
     }
 }
 
+define('DISALLOW_FILE_MODS',true);
+
 // Default PHP settings.
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
