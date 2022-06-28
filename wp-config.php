@@ -159,7 +159,7 @@ if(
     }
 }
 
-define('DISALLOW_FILE_MODS',true);
+define('DISALLOW_FILE_MODS',false);
 
 // Default PHP settings.
 ini_set('session.gc_probability', 1);
