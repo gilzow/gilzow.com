@@ -11,7 +11,8 @@
     "wpackagist-plugin/classic-editor": "^1.4",
     "wpackagist-plugin/cache-control": "^2.2.3",
     "wpackagist-plugin/wp-cfm":"^1.7.4",
-    "wpackagist-theme/twentyseventeen": "^3.0"
+    "wpackagist-theme/twentyseventeen": "^3.0",
+    "wpackagist-plugin/wordpress-importer": "^0.7"
   },
   "config": {
     "allow-plugins": {
