@@ -107,9 +107,6 @@ mounts:
   "web/wp-content/uploads":
     source: local
     source_path: "uploads"
-  "web/wp-content/blogs.dir":
-    source: local
-    source_path: "blogs.dir"
 
 
 source:
