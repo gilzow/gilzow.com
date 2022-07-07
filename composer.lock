@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3e738a9856250a2d5f20cc48006fd3c",
+    "content-hash": "05d755a2aa7082ab10fa7e43a3198296",
     "packages": [
         {
             "name": "composer/installers",
@@ -348,6 +348,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/fakerpress/"
+        },
+        {
+            "name": "wpackagist-plugin/index-wp-mysql-for-speed",
+            "version": "1.4.4",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/index-wp-mysql-for-speed/",
+                "reference": "tags/1.4.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/index-wp-mysql-for-speed.1.4.4.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/index-wp-mysql-for-speed/"
         },
         {
             "name": "wpackagist-plugin/wordpress-importer",
