@@ -16,12 +16,18 @@ dependencies:
     composer/composer: '^2'
     wp-cli/wp-cli-bundle: "^2.4.0"
 
+runtime:
+  extensions:
+    - redis
 hooks:
   build: |
     set -e
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
     rsync -a plugins/* web/wp-content/plugins/
+    if [ -f wordpress/wp-content/plugins/redis-cache/includes/object-cache.php ]; then
+      cp web/wp-content/plugins/redis-cache/includes/object-cache.php web/wp-content/object-cache.php
+    fi  
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
@@ -29,6 +35,7 @@ hooks:
 # side is in the form `<service name>:<endpoint name>`.
 relationships:
   database: "db:mysql"
+  redis: "rediscache:redis"
 
 # The configuration of app when it is exposed to the web.
 web:
