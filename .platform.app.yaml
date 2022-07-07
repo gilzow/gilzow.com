@@ -25,7 +25,7 @@ hooks:
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
     rsync -a plugins/* web/wp-content/plugins/
-    if [ -f wordpress/wp-content/plugins/redis-cache/includes/object-cache.php ]; then
+    if [ -f web/wp-content/plugins/redis-cache/includes/object-cache.php ]; then
       cp web/wp-content/plugins/redis-cache/includes/object-cache.php web/wp-content/object-cache.php
     fi  
 
