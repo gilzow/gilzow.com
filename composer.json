@@ -13,8 +13,7 @@
     "wpackagist-plugin/wp-cfm":"^1.7.4",
     "wpackagist-theme/twentyseventeen": "^3.0",
     "wpackagist-plugin/wordpress-importer": "^0.7",
-    "wpackagist-plugin/fakerpress": "<1.0.0",
-    "wpackagist-plugin/index-wp-mysql-for-speed": "^1.4.4"
+    "wpackagist-plugin/fakerpress": "<1.0.0"
   },
   "config": {
     "allow-plugins": {
