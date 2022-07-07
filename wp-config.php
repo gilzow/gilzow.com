@@ -161,6 +161,14 @@ if(
 
 define('DISALLOW_FILE_MODS',false);
 
+if ($config->hasRelationship('redis') && extension_loaded('redis')) {
+    $credentials = $config->credentials('redis');
+
+    define('WP_REDIS_CLIENT', 'phpredis');
+    define('WP_REDIS_HOST', $credentials['host']);
+    define('WP_REDIS_PORT', $credentials['port']);
+}
+
 // Default PHP settings.
 ini_set('session.gc_probability', 1);
 ini_set('session.gc_divisor', 100);
