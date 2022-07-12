@@ -50,10 +50,16 @@ $strTablePrefix = rtrim(`wp config get table_prefix --url=$defaultSearchURL`);
 
 $tables=[$strTablePrefix.'site',$strTablePrefix.'blogs',];
 
-$regexSearchPttrn='(%s(?!\.%s))';
+//$regexSearchPttrn='(%s(?!\.%s))';
 
 $jsonSites=`wp site list --fields=blog_id,url --format=json --url=$defaultSearchURL`;
-$sites=json_decode($jsonSites,true);
+
+try {
+    $sites= json_decode($jsonSites, true, 512, JSON_THROW_ON_ERROR);
+} catch (JsonException $e) {
+    die('Couldn\'t get list of sites from WordPress instance: ' . $e->getMessage());
+}
+
 
 /**
  * Order the sites by domain "length", desc
