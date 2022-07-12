@@ -100,14 +100,14 @@ foreach ($aryRoutesFiltered as $urlReplace=>$routeData) {
     //$regexSearch = sprintf($regexSearchPttrn, preg_quote($domainSearch,'/'), preg_quote($defaultReplaceDomain,'/'));
     $searchTables = implode(' ', $targetTables);
     $searchColumns = implode(',',$arySearchColumns);
-    $replacePattern = 'wp search-replace \'%s\' %s %s --include-columns=%s --url=%s --verbose';
+    $replacePattern = 'wp search-replace \'%s\' %s %s --include-columns=%s%s --url=%s --verbose';
     //`wp search-replace '$regexSearch' '$domainReplace' --skip-columns=guid --regex --network --url={$routeData['production_url']} --verbose`;
     /*
      * For the primary domain, we want to run it through the whole network, otherwise we end up with a mismatch between
      * wp_blogs and a site's wp_#_options table
      */
     $network = (isset($routeData['primary']) && $routeData['primary']) ? ' --network' : '';
-    $command = sprintf($replacePattern, $domainSearch, $domainReplace, $searchTables, $searchColumns, $routeData['production_url']);
+    $command = sprintf($replacePattern, $domainSearch, $domainReplace, $searchTables, $searchColumns, $network, $routeData['production_url']);
     echo "I am going to execute the following: ", PHP_EOL, $command, PHP_EOL;
     exec($command,$output, $result);
     if (1 === $result) {
