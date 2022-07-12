@@ -64,7 +64,7 @@ try {
 /**
  * Order the sites by domain "length", desc
  * ie some.sub.domain.com comes before sub.domain.com which comes before domain.com
- */
+Not needed for mizzou
 uasort($aryRoutesFiltered, function ($a, $b) {
     $lena = substr_count($a['production_url'],'.');
     $lenb = substr_count($b['production_url'],'.');
@@ -73,14 +73,16 @@ uasort($aryRoutesFiltered, function ($a, $b) {
     }
     return ($lena < $lenb) ? 1 : -11;
 });
-
+ */
 /**
  * We need the default_domain to be processed LAST otherwise any domains that are subdomains of it wont be allowed to
  * update their tables. This assumes that our default_domain is first in the list which it *should* be.
  * @todo do we need to search for default_domain, remove it from where it is, and then append it?
  */
-//$aryRoutesFiltered = array_reverse($aryRoutesFiltered);
+$aryRoutesFiltered = array_reverse($aryRoutesFiltered);
 
+echo "Before starting, order of URLs to process: ", PHP_EOL;
+print_r($aryRoutesFiltered);
 
 foreach ($aryRoutesFiltered as $urlReplace=>$routeData) {
     $domainSearch = parse_url($routeData['production_url'], PHP_URL_HOST);
