@@ -27,7 +27,9 @@ hooks:
     rsync -a plugins/* web/wp-content/plugins/
     #if [ -f web/wp-content/plugins/redis-cache/includes/object-cache.php ]; then
       #cp web/wp-content/plugins/redis-cache/includes/object-cache.php web/wp-content/object-cache.php
-    #fi  
+    #fi
+  deploy: |
+    wp plugin list
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
