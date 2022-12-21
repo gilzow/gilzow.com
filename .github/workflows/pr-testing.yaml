@@ -15,15 +15,8 @@ jobs:
   test-pr-env:
     name: TestPrEnvironment
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'gilzow' }}
+    if: ${{ github.repository_owner == 'gilzow' }} && ${{ env.BASELINE_URL != '' }}
     steps:
-      - name: 'Check for Baseline URL'
-        id: check-baseline-url
-        run: |
-          if [[ -z ${{ secrets.BASELINE_URL+x}} ]]; then
-            echo "::warning::The url to use for generating baseline images must be set as a repository secret"
-            exit 1;
-          fi
       - name: 'Wait for psh and get target url'
         id: get-target-url
         uses: platformsh/gha-retrieve-psh-prenv-url@main
