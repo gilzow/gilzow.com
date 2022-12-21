@@ -1,0 +1,42 @@
+name: "TestPrEnvironment"
+on:
+  workflow_run:
+    workflows: [ "platformsh" ]
+    types:
+      - completed
+  pull_request:
+    branches:
+      - main
+      - master
+env:
+  BASELINE_URL: ${{ secrets.BASELINE_URL }}
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+jobs:
+  test-pr-env:
+    name: TestPrEnvironment
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'gilzow' }}
+    steps:
+      - name: 'Check for Baseline URL'
+        id: check-baseline-url
+        run: |
+          if [[ -z ${{ secrets.BASELINE_URL+x}} ]]; then
+            echo "::warning::The url to use for generating baseline images must be set as a repository secret"
+            exit 1;
+          fi
+      - name: 'Wait for psh and get target url'
+        id: get-target-url
+        uses: platformsh/gha-retrieve-psh-prenv-url@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Visual Regression Testing'
+        id: test-environment
+        uses: gilzow/gha-vrt@main
+        with:
+          baseline_url: ${{ secrets.BASELINE_URL }}
+          test_url: ${{ steps.get-target-url.outputs.target_url }}
+      - name: 'VRT results?'
+        id: vrt-results
+        run: |
+          vrt_results=${{ steps.test-environment.outputs.results }}
+          echo "::notice::The results from the VRT test is ${vrt_results}"
