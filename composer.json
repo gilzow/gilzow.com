@@ -3,7 +3,7 @@
   "description": "Gilzow.com site project",
   "type": "project",
   "require": {
-    "php": "^7.4",
+    "php": "^8.0",
     "platformsh/config-reader": "^2.4",
     "johnpbloch/wordpress-core-installer": "<3.0.0",
     "johnpbloch/wordpress-core": "^5.1.1",
@@ -14,7 +14,8 @@
     "wpackagist-theme/twentyseventeen": "^3.0",
     "wpackagist-plugin/wordpress-importer": "^0.7",
     "wpackagist-plugin/fakerpress": "<1.0.0",
-    "wpackagist-plugin/redis-cache": "^2.0.23"
+    "wpackagist-plugin/redis-cache": "^2.0.23",
+    "wpackagist-plugin/user-role-editor": "^4.64"
   },
   "config": {
     "allow-plugins": {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61a8298f655a290a159f52e36bffa956",
+    "content-hash": "97cb913240e1221eb9902f2087cf5319",
     "packages": [
         {
             "name": "composer/installers",
@@ -368,6 +368,24 @@
             "homepage": "https://wordpress.org/plugins/redis-cache/"
         },
         {
+            "name": "wpackagist-plugin/user-role-editor",
+            "version": "4.64",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/user-role-editor/",
+                "reference": "tags/4.64"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/user-role-editor.4.64.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/user-role-editor/"
+        },
+        {
             "name": "wpackagist-plugin/wordpress-importer",
             "version": "0.7",
             "source": {
@@ -447,7 +465,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4"
+        "php": "^8.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
