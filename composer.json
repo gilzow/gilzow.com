@@ -6,7 +6,7 @@
     "php": "^8.0",
     "platformsh/config-reader": "^2.4",
     "johnpbloch/wordpress-core-installer": "<3.0.0",
-    "johnpbloch/wordpress-core": "^5.1.1",
+    "johnpbloch/wordpress-core": "^6.1.1",
     "wpackagist-theme/twentytwentytwo": "^1.2",
     "wpackagist-plugin/classic-editor": "^1.4",
     "wpackagist-plugin/cache-control": "^2.2.3",
