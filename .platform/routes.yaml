@@ -37,6 +37,6 @@
     type: redirect
     to: "https://{all}/"
 
-"http://{all}/":
+"https://{all}/":
   type: redirect
   to: "https://{default}/"
