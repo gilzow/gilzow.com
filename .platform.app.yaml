@@ -3,8 +3,7 @@
 
 # The name of this app. Must be unique within a project.
 name: app
-properties:
-  favicon: favicon.ico
+
 # The runtime the application uses.
 type: "php:8.1"
 
