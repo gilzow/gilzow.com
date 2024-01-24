@@ -116,7 +116,9 @@ mounts:
   "web/wp-content/uploads":
     source: local
     source_path: "uploads"
-
+  /.cache:
+    source: local
+    source_path: cache2
 
 source:
   operations:
