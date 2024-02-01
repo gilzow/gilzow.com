@@ -36,3 +36,9 @@
 "https://www.{all}/":
     type: redirect
     to: "https://{all}/"
+
+"https://foo.main-bvxea6i-knmrj5cbepipu.ca-1.platformsh.site":
+  type: upstream
+  upstream: "app:http"
+  cache:
+    enabled: true
