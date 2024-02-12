@@ -31,6 +31,8 @@
         '^/wp-admin$':
           to: "/wp-admin/"
           regexp: true
+        '/google':
+          to: "https://google.com/"
 
 # *ALL* www.* requests should be redirected back to primary domain
 "https://www.{all}/":
