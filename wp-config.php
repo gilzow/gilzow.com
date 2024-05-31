@@ -68,8 +68,11 @@ if ($config->isValidPlatform()) {
 
             //we're on platform.sh, so we _should_ have a site_host, and it _Should_ be one in routes
             if (!in_array($site_host, $aryValidDomains, true)) {
-                //since site_host isn't one of our valid domains, let's set it to the first one from the list of valid options
-                $site_host = reset($aryValidDomains);
+                //since site_host isn't one of our valid domains, let's set it to the primary route's domain
+                $site_host = parse_url(array_key_first(array_filter($aryUpstreamRoutes, static function ($route) {
+                    return $route['primary'];
+                })),PHP_URL_HOST);
+
                 $site_scheme = 'https'; //@todo can/should we assume we're always https?
             }
 
