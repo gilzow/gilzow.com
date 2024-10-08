@@ -127,4 +127,10 @@ source:
     auto-update:
       command: |
         curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/setup.sh | { bash /dev/fd/3 sop-autoupdate; } 3<&0
+    update:
+      command: |
+        set -e
+        composer update --with-dependencies
+        git add composer.lock
+        git commit -m "source-op update" 
 
