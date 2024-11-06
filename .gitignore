@@ -19,3 +19,4 @@ web/wp-content/uploads
 
 *.sql
 .ddev
+node_modules
