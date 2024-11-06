@@ -32,7 +32,7 @@ hooks:
   deploy: |
     set -e
     if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-      php ./scripts/db-updater.php
+      ## php ./scripts/db-updater.php
     fi    
 
 # The relationships of the application with services or other applications.
