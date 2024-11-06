@@ -22,7 +22,7 @@ runtime:
 hooks:
   build: |
     set -e
-    wp package install gilzow/wp-ms-dbu-wpcli-package:dev-master
+    wp package install gilzow/wp-ms-dbu-wpcli-package:dev-main
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
     rsync -a plugins/* web/wp-content/plugins/
