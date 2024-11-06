@@ -23,6 +23,7 @@ hooks:
   build: |
     set -e
     wp package install gilzow/wp-ms-dbu-wpcli-package:dev-main
+    wp package update gilzow/wp-ms-dbu-wpcli-package
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
     rsync -a plugins/* web/wp-content/plugins/
@@ -31,9 +32,9 @@ hooks:
     fi
   deploy: |
     set -e
-    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-      ## php ./scripts/db-updater.php
-    fi    
+#    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
+#      ## php ./scripts/db-updater.php
+#    fi
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
