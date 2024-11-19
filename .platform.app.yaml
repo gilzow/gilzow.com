@@ -34,9 +34,10 @@ hooks:
     set -e
     wp package list
     if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-      wp ms-dbu
+      echo "Trying to update the multisite..."
+      wp ms-dbu update
     fi
-
+    
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
