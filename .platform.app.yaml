@@ -35,7 +35,7 @@ hooks:
     wp package list
     if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
       echo "Trying to update the multisite..."
-      wp ms-dbu update
+      wp ms-dbu update --dry-run
     fi
     
 
