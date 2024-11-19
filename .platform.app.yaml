@@ -33,9 +33,9 @@ hooks:
   deploy: |
     set -e
     wp package list
-#    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-#      ## php ./scripts/db-updater.php
-#    fi
+    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
+      wp ms-dbu
+    fi
 
 
 # The relationships of the application with services or other applications.
