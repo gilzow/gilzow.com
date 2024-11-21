@@ -5,7 +5,7 @@
 name: app
 
 # The runtime the application uses.
-type: "php:8.1"
+type: "php:8.3"
 
 # Configuration of the build of the application.
 build:
@@ -22,6 +22,10 @@ runtime:
 hooks:
   build: |
     set -e
+    wp --version
+    which wp
+    whereis wp
+    wp package list
     wp package install gilzow/wp-ms-dbu-wpcli-package:dev-main
     wp package update gilzow/wp-ms-dbu-wpcli-package
     # Copy manually-provided plugins into the plugins directory.
