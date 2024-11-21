@@ -38,9 +38,12 @@ hooks:
   deploy: |
     set -e
     wp package list
-    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-      echo "Trying to update the multisite..."
-      wp ms-dbu update --dry-run
+    PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r 'map_values(select(.primary == true)) | . [] | .production_url')
+    
+    if [ 'production' != "${PLATFORM_ENVIRONMENT_TYPE}" ] &&  wp site list --format=count --url="${PRODURL}" &>/dev/null; then
+      wp ms-dbu update --url="${PRODURL}"
+    else
+      echo "Database appears to already be updated. Skipping.";
     fi
     
 
