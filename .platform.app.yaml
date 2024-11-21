@@ -25,7 +25,7 @@ hooks:
     wp --version
     which wp
     whereis wp
-    wp package list
+    wp package list --debug
     wp package install gilzow/wp-ms-dbu-wpcli-package:dev-main
     wp package update gilzow/wp-ms-dbu-wpcli-package
     # Copy manually-provided plugins into the plugins directory.
