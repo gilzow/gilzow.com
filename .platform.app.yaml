@@ -5,7 +5,7 @@
 name: app
 
 # The runtime the application uses.
-type: "php:8.3"
+type: "php:8.1"
 
 # Configuration of the build of the application.
 build:
@@ -14,6 +14,7 @@ build:
 dependencies:
   php:
     composer/composer: '^2'
+    wp-cli/wp-cli: "^2.4.0"
     wp-cli/wp-cli-bundle: "^2.4.0"
 
 runtime:
