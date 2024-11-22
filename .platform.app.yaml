@@ -39,8 +39,9 @@ hooks:
     set -e
     wp package list
     # php 8.1 image has jq 1.5; map_values() wasn't added until 1.6
+    # nor does 1.5 support mapping :facepalm:
     #PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r 'map_values(select(.primary == true)) | . [] | .production_url')
-    PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r '.[] |= select(.primary == true) | . [] | .production_url')
+    PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r '.[] | select(.primary == true) | .production_url')
     
     if [ 'production' != "${PLATFORM_ENVIRONMENT_TYPE}" ] &&  wp site list --format=count --url="${PRODURL}" &>/dev/null; then
       wp ms-dbu update --url="${PRODURL}"
