@@ -41,7 +41,7 @@ hooks:
     # nor does 1.5 support mapping :facepalm:
     #PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r 'map_values(select(.primary == true)) | . [] | .production_url')
     PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r '.[] | select(.primary == true) | .production_url')
-    if [ 'production' != "${PLATFORM_ENVIRONMENT_TYPE}" ] &&  wp site list --format=count --url="${PRODURL}" &>/dev/null; then
+    if [ 'production' != "${PLATFORM_ENVIRONMENT_TYPE}" ] &&  wp site list --format=count --url="${PRODURL}" >/dev/null 2>&1; then
       echo "Updating the database...";
       wp ms-dbu update --url="${PRODURL}"
     else
