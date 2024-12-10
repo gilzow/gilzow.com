@@ -14,6 +14,7 @@ build:
 dependencies:
   php:
     composer/composer: '^2'
+    wp-cli/wp-cli: "^2.4.0"
     wp-cli/wp-cli-bundle: "^2.4.0"
 
 runtime:
@@ -22,6 +23,12 @@ runtime:
 hooks:
   build: |
     set -e
+    wp --version
+    which wp
+    whereis wp
+    wp package list --debug
+    wp package install gilzow/wp-ms-dbu-wpcli-package:dev-main
+    wp package update gilzow/wp-ms-dbu-wpcli-package
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
     rsync -a plugins/* web/wp-content/plugins/
@@ -30,9 +37,18 @@ hooks:
     fi
   deploy: |
     set -e
-    if [ 'production' != "$PLATFORM_ENVIRONMENT_TYPE" ]; then
-      php ./scripts/db-updater.php
-    fi    
+    # php 8.1 image has jq 1.5; map_values() wasn't added until 1.6
+    # nor does 1.5 support mapping :facepalm:
+    #PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r 'map_values(select(.primary == true)) | . [] | .production_url')
+    wp cache flush
+    PRODURL=$(echo $PLATFORM_ROUTES | base64 --decode | jq -r '[.[] | select(.primary == true)] | first | .production_url')
+    if [ 'production' != "${PLATFORM_ENVIRONMENT_TYPE}" ] &&  wp site list --format=count --url="${PRODURL}" >/dev/null 2>&1; then
+      echo "Updating the database...";
+      wp ms-dbu update --url="${PRODURL}"
+    else
+      echo "Database appears to already be updated. Skipping.";
+    fi
+    
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
