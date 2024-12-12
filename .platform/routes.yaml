@@ -16,6 +16,8 @@
       '^/wp-admin$':
         to: "/wp-admin/"
         regexp: true
+      '/github':
+        to: "https://github.gilzow.com/"
 
 "https://{all}/":
     type: upstream
