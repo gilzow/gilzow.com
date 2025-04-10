@@ -172,14 +172,6 @@ if ($config->hasRelationship('redis') && extension_loaded('redis')) {
     define('WP_REDIS_PORT', $credentials['port']);
 }
 
-// Default PHP settings.
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
-ini_set('session.gc_maxlifetime', 200000);
-ini_set('session.cookie_lifetime', 2000000);
-ini_set('pcre.backtrack_limit', 200000);
-ini_set('pcre.recursion_limit', 200000);
-
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', dirname( __FILE__ ) . '/' );
