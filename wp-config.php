@@ -22,7 +22,7 @@ $site_host = 'localhost';
 
 // Update scheme and hostname for the requested page.
 if (isset($_SERVER['HTTP_HOST'])) {
-    $site_host = $_SERVER['HTTP_HOST'];
+    $domainCurrentSite = $site_host = $_SERVER['HTTP_HOST'];
     $site_scheme = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
 }
 
