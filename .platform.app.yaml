@@ -23,10 +23,10 @@ hooks:
   build: |
     set -e
     echo "installing wp-ms-dbu package..."
-      wp package install wp-ms-dbu:dev-debug
+      wp package install upsun/wp-ms-dbu:dev-debug
       echo "done."
       echo "updating wp-ms-dbu package... "
-      wp package update uwp-ms-dbu:dev-debug
+      wp package update upsun/uwp-ms-dbu:dev-debug
     echo "done."
     # Copy manually-provided plugins into the plugins directory.
     # This allows manually-provided and composer-provided plugins to coexist.
