@@ -317,15 +317,15 @@
         },
         {
             "name": "wpackagist-plugin/classic-editor",
-            "version": "1.6.5",
+            "version": "1.6.7",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/classic-editor/",
-                "reference": "tags/1.6.5"
+                "reference": "tags/1.6.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/classic-editor.1.6.5.zip"
+                "url": "https://downloads.wordpress.org/plugin/classic-editor.1.6.7.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -371,15 +371,15 @@
         },
         {
             "name": "wpackagist-plugin/user-role-editor",
-            "version": "4.64.2",
+            "version": "4.64.4",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/user-role-editor/",
-                "reference": "tags/4.64.2"
+                "reference": "tags/4.64.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/user-role-editor.4.64.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/user-role-editor.4.64.4.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -463,12 +463,12 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
