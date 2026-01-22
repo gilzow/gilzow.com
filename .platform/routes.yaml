@@ -35,6 +35,8 @@
           regexp: true
         '/google':
           to: "https://google.com/"
+        'staging':
+          to: "https://staging-5em2ouy-knmrj5cbepipu.ca-1.platformsh.site/"
 
 # *ALL* www.* requests should be redirected back to primary domain
 "https://www.{all}/":
