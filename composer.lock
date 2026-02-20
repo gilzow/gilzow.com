@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4f4fc5acc5e38bfa5eaf8a1d5a18c9a",
+    "content-hash": "41faab1a55c5d1023c6ced027f913170",
     "packages": [
         {
             "name": "composer/installers",
@@ -153,17 +153,165 @@
             "time": "2024-06-24T20:46:46+00:00"
         },
         {
-            "name": "johnpbloch/wordpress-core",
-            "version": "6.7.1",
+            "name": "cweagans/composer-patches",
+            "version": "1.7.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/johnpbloch/wordpress-core.git",
-                "reference": "1975a1deaef23914b391f37314cc0e6a23ae16d7"
+                "url": "https://github.com/cweagans/composer-patches.git",
+                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/1975a1deaef23914b391f37314cc0e6a23ae16d7",
-                "reference": "1975a1deaef23914b391f37314cc0e6a23ae16d7",
+                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
+                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0 || ^2.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "composer/composer": "~1.0 || ~2.0",
+                "phpunit/phpunit": "~4.6"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "cweagans\\Composer\\Patches"
+            },
+            "autoload": {
+                "psr-4": {
+                    "cweagans\\Composer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Cameron Eagans",
+                    "email": "me@cweagans.net"
+                }
+            ],
+            "description": "Provides a way to patch Composer packages.",
+            "support": {
+                "issues": "https://github.com/cweagans/composer-patches/issues",
+                "source": "https://github.com/cweagans/composer-patches/tree/1.7.3"
+            },
+            "time": "2022-12-20T22:53:13+00:00"
+        },
+        {
+            "name": "forumone/wp-cfm",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/forumone/wp-cfm-dist.git",
+                "reference": "4a2a3518bd0f0f1b41f5da4ffc7f96389d3edaec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/forumone/wp-cfm-dist/zipball/4a2a3518bd0f0f1b41f5da4ffc7f96389d3edaec",
+                "reference": "4a2a3518bd0f0f1b41f5da4ffc7f96389d3edaec",
+                "shasum": ""
+            },
+            "require": {
+                "cweagans/composer-patches": "^1.7",
+                "php": ">=7.4",
+                "symfony/yaml": "^5.4"
+            },
+            "require-dev": {
+                "brain/monkey": "^2.6",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "johnpbloch/wordpress-core": "~6.4.0",
+                "johnpbloch/wordpress-core-installer": "^2.0",
+                "mockery/mockery": "^1.6",
+                "php": ">=7.4",
+                "php-stubs/wordpress-globals": "^0.2.0",
+                "php-stubs/wordpress-stubs": "~6.4.0",
+                "php-stubs/wp-cli-stubs": "^2.9",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^3.7",
+                "szepeviktor/phpstan-wordpress": "^1.3",
+                "wp-coding-standards/wpcs": "^3.0.0",
+                "wp-phpunit/wp-phpunit": "~6.4.0",
+                "wpackagist-plugin/debug-bar": "*",
+                "wpackagist-plugin/debug-bar-actions-and-filters-addon": "*",
+                "wpackagist-plugin/display-environment-type": "*",
+                "wpackagist-plugin/health-check": "*",
+                "wpackagist-plugin/query-monitor": "*",
+                "wpackagist-plugin/transients-manager": "*",
+                "wpackagist-theme/twentytwentythree": "*",
+                "yoast/phpunit-polyfills": "^2.0"
+            },
+            "type": "wordpress-plugin",
+            "extra": {
+                "patches": [],
+                "installer-paths": {
+                    "tools/local-env/wp-content/themes/{$name}": [
+                        "type:wordpress-theme"
+                    ],
+                    "tools/local-env/wp-content/plugins/{$name}": [
+                        "type:wordpress-plugin"
+                    ],
+                    "tools/local-env/wp-content/mu-plugins/{$name}": [
+                        "type:wordpress-muplugin"
+                    ]
+                },
+                "wordpress-install-dir": "tools/local-env/wp",
+                "phpcodesniffer-search-depth": 5,
+                "composer-exit-on-patch-failure": true
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Forum One",
+                    "email": "wordpress@forumone.com",
+                    "homepage": "https://forumone.com"
+                },
+                {
+                    "name": "Matt Gibbs",
+                    "homepage": "https://facetwp.com/"
+                },
+                {
+                    "name": "Tim Nolte",
+                    "homepage": "https://github.com/timnolte"
+                },
+                {
+                    "name": "Deanna Steers",
+                    "email": "dsteers@forumone.com"
+                }
+            ],
+            "description": "Manage and deploy WordPress configuration changes.",
+            "homepage": "https://github.com/forumone/wp-cfm-dist",
+            "keywords": [
+                "configuration",
+                "plugin",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/forumone/wp-cfm-dist/issues",
+                "source": "https://github.com/forumone/wp-cfm-dist/tree/2.0.1"
+            },
+            "time": "2024-11-14T17:27:49+00:00"
+        },
+        {
+            "name": "johnpbloch/wordpress-core",
+            "version": "6.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/johnpbloch/wordpress-core.git",
+                "reference": "840ffab74cb3d19cc0076363358f783041b5f3cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/johnpbloch/wordpress-core/zipball/840ffab74cb3d19cc0076363358f783041b5f3cf",
+                "reference": "840ffab74cb3d19cc0076363358f783041b5f3cf",
                 "shasum": ""
             },
             "require": {
@@ -171,7 +319,7 @@
                 "php": ">=7.2.24"
             },
             "provide": {
-                "wordpress/core-implementation": "6.7.1"
+                "wordpress/core-implementation": "6.9.1"
             },
             "type": "wordpress-core",
             "notification-url": "https://packagist.org/downloads/",
@@ -198,7 +346,7 @@
                 "source": "https://core.trac.wordpress.org/browser",
                 "wiki": "https://codex.wordpress.org/"
             },
-            "time": "2024-11-21T14:47:02+00:00"
+            "time": "2026-02-03T18:03:48+00:00"
         },
         {
             "name": "johnpbloch/wordpress-core-installer",
@@ -298,6 +446,231 @@
             "time": "2023-09-14T17:07:00+00:00"
         },
         {
+            "name": "symfony/deprecation-contracts",
+            "version": "v3.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "reference": "63afe740e99a13ba87ec199bb07bbdee937a5b62",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
+                "branch-alias": {
+                    "dev-main": "3.6-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "function.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "A generic function and convention to trigger deprecation notices",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-25T14:21:43+00:00"
+        },
+        {
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/a3cc8b044a6ea513310cbd48ef7333b384945638",
+                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "provide": {
+                "ext-ctype": "*"
+            },
+            "suggest": {
+                "ext-ctype": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for ctype functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "ctype",
+                "polyfill",
+                "portable"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-09T11:45:10+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v5.4.45",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "a454d47278cc16a5db371fe73ae66a78a633371e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/a454d47278cc16a5db371fe73ae66a78a633371e",
+                "reference": "a454d47278cc16a5db371fe73ae66a78a633371e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1|^3",
+                "symfony/polyfill-ctype": "^1.8"
+            },
+            "conflict": {
+                "symfony/console": "<5.3"
+            },
+            "require-dev": {
+                "symfony/console": "^5.3|^6.0"
+            },
+            "suggest": {
+                "symfony/console": "For validating YAML files using the lint command"
+            },
+            "bin": [
+                "Resources/bin/yaml-lint"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Loads and dumps YAML files",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/yaml/tree/v5.4.45"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-25T14:11:13+00:00"
+        },
+        {
             "name": "wpackagist-plugin/cache-control",
             "version": "2.2.5",
             "source": {
@@ -335,15 +708,15 @@
         },
         {
             "name": "wpackagist-plugin/fakerpress",
-            "version": "0.6.6",
+            "version": "0.8.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fakerpress/",
-                "reference": "tags/0.6.6"
+                "reference": "tags/0.8.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.6.6.zip"
+                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.8.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -353,15 +726,15 @@
         },
         {
             "name": "wpackagist-plugin/redis-cache",
-            "version": "2.5.4",
+            "version": "2.7.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/redis-cache/",
-                "reference": "tags/2.5.4"
+                "reference": "tags/2.7.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/redis-cache.2.5.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/redis-cache.2.7.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -371,15 +744,15 @@
         },
         {
             "name": "wpackagist-plugin/user-role-editor",
-            "version": "4.64.4",
+            "version": "4.64.6",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/user-role-editor/",
-                "reference": "tags/4.64.4"
+                "reference": "tags/4.64.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/user-role-editor.4.64.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/user-role-editor.4.64.6.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -406,34 +779,16 @@
             "homepage": "https://wordpress.org/plugins/wordpress-importer/"
         },
         {
-            "name": "wpackagist-plugin/wp-cfm",
-            "version": "1.7.10",
-            "source": {
-                "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/wp-cfm/",
-                "reference": "tags/1.7.10"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wp-cfm.1.7.10.zip"
-            },
-            "require": {
-                "composer/installers": "^1.0 || ^2.0"
-            },
-            "type": "wordpress-plugin",
-            "homepage": "https://wordpress.org/plugins/wp-cfm/"
-        },
-        {
             "name": "wpackagist-theme/twentyseventeen",
-            "version": "3.8",
+            "version": "3.9",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentyseventeen/",
-                "reference": "3.8"
+                "reference": "3.9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.8.zip"
+                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.9.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"

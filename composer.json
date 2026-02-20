@@ -10,17 +10,19 @@
     "wpackagist-theme/twentytwentytwo": "^1.2",
     "wpackagist-plugin/classic-editor": "^1.4",
     "wpackagist-plugin/cache-control": "^2.2.5",
-    "wpackagist-plugin/wp-cfm":"^1.7.4",
     "wpackagist-theme/twentyseventeen": "^3.0",
     "wpackagist-plugin/wordpress-importer": "^0.7",
     "wpackagist-plugin/fakerpress": "<1.0.0",
     "wpackagist-plugin/redis-cache": "^2.0.23",
-    "wpackagist-plugin/user-role-editor": "^4.64"
+    "wpackagist-plugin/user-role-editor": "^4.64",
+    "forumone/wp-cfm": "^2.0.1"
   },
   "config": {
     "allow-plugins": {
       "johnpbloch/wordpress-core-installer": true,
-      "composer/installers": true
+      "composer/installers": true,
+      "symfony/flex": true,
+      "cweagans/composer-patches": true
     }
   },
   "authors": [
@@ -38,11 +40,6 @@
   "extra" : {
     "wordpress-install-dir": "web/wp",
     "installer-paths": {
-      "web/wp-content/mu-plugins/{$name}": [
-        "wpackagist-plugin/cache-control",
-        "wpackagist-plugin/wp-cfm"
-      ],
-
       "web/wp-content/plugins/{$name}": [
         "type:wordpress-plugin"
       ],
